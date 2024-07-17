@@ -14,7 +14,7 @@ class CreateSubjectsTable extends Migration
             $table->foreignId('education_level_id')->constrained();
             $table->string('name');
             $table->integer('max_marks');
-            $table->integer('min_marks');
+            $table->integer('min_passing_marks');
             $table->timestamps();
         });
     }

@@ -11,7 +11,7 @@ class CreateStudentsTable extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             // $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->foreignId('initial_education_level_id')->constrained();
+            $table->foreignId('initial_education_level_id')->constrained('education_levels');
             $table->foreignId('education_level_id')->constrained();
             $table->string('registery_number')->unique();
             $table->string('first_name');
@@ -29,14 +29,14 @@ class CreateStudentsTable extends Migration
             $table->string('mother_tongue')->nullable();
             $table->date('school_leaving_date')->nullable();
 
-            $table->string('father_name');
+            $table->string('father_name')->nullable();
             $table->string('father_cnic')->nullable();
             $table->string('mother_name')->nullable();
             $table->string('mother_cnic')->nullable();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
 
-            $table->foreignId('previous_education_level_id')->nullable();
+            $table->foreignId('previous_education_level_id')->nullable()->constrained('education_levels');
             $table->string('previous_study_year')->nullable();
             $table->string('previous_school_name')->nullable();
             $table->integer('previous_level_marks')->nullable();

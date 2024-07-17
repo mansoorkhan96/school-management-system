@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\BloodGroup;
+use App\Enums\Gender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +14,25 @@ class Student extends Model
     // use \Awobaz\Compoships\Compoships;
     use HasFactory;
     use SoftDeletes;
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'gender' => Gender::class,
+            'blood_group' => BloodGroup::class,
+            'admission_date' => 'date',
+            'date_of_birth' => 'date',
+            'school_leaving_date' => 'date',
+            'has_disability' => 'boolean',
+            'has_doctor_consultancy' => 'boolean',
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function educationLevel(): BelongsTo
     {
