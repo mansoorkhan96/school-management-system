@@ -2,9 +2,10 @@
 
 namespace App\Enums;
 
+use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum AttendanceStatus: string implements HasLabel
+enum AttendanceStatus: string implements HasColor, HasLabel
 {
     case Present = 'present';
     case Absent = 'absent';
@@ -16,6 +17,24 @@ enum AttendanceStatus: string implements HasLabel
             self::Present => 'Present',
             self::Absent => 'Absent',
             self::Leave => 'Leave',
+        };
+    }
+
+    public function getShortLabel(): ?string
+    {
+        return match ($this) {
+            self::Present => 'P',
+            self::Absent => 'A',
+            self::Leave => 'L',
+        };
+    }
+
+    public function getColor(): string|array|null
+    {
+        return match ($this) {
+            self::Present => 'success',
+            self::Absent => 'danger',
+            self::Leave => 'warning',
         };
     }
 }

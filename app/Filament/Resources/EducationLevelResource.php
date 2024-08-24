@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EducationLevelResource\Pages;
+use App\Filament\Resources\EducationLevelResource\RelationManagers\AttendancesRelationManager;
 use App\Models\EducationLevel;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -45,6 +46,8 @@ class EducationLevelResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('take-attendance')
+                    ->url(fn (EducationLevel $record) => self::getUrl('take-attendance', ['record' => $record])),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -54,10 +57,20 @@ class EducationLevelResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            AttendancesRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageEducationLevels::route('/'),
+            'index' => Pages\ListEducationLevels::route('/'),
+            'create' => Pages\CreateEducationLevel::route('/create'),
+            'edit' => Pages\EditEducationLevel::route('/{record}/edit'),
+            'take-attendance' => Pages\TakeAttendance::route('/{record}/take-attendance'),
         ];
     }
 }

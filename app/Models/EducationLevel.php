@@ -25,4 +25,9 @@ class EducationLevel extends Model
     {
         return $this->hasMany(Subject::class);
     }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }

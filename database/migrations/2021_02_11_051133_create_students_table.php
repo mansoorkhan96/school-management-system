@@ -18,7 +18,7 @@ class CreateStudentsTable extends Migration
             $table->string('last_name');
             $table->string('surname');
             $table->string('gender');
-            $table->date('admission_date')->useCurrent();
+            $table->date('admission_date');
 
             $table->date('date_of_birth')->nullable();
             $table->string('blood_group')->nullable();

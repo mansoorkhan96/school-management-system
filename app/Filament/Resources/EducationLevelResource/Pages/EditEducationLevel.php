@@ -4,16 +4,18 @@ namespace App\Filament\Resources\EducationLevelResource\Pages;
 
 use App\Filament\Resources\EducationLevelResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\EditRecord;
 
-class ManageEducationLevels extends ManageRecords
+class EditEducationLevel extends EditRecord
 {
     protected static string $resource = EducationLevelResource::class;
+
+    protected ?string $maxContentWidth = 'full';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\DeleteAction::make(),
         ];
     }
 }

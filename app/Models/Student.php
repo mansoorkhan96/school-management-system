@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Enums\BloodGroup;
 use App\Enums\Gender;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Student extends Model
@@ -49,6 +51,11 @@ class Student extends Model
         return $this->belongsTo(EducationLevel::class, 'previous_education_level_id');
     }
 
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
     // public function examination()
     // {
     //     return $this->hasMany(
@@ -62,4 +69,11 @@ class Student extends Model
     // public function fees() {
     //     return $this->hasMany('App\Fees');
     // }
+
+    public function name(): Attribute
+    {
+        return new Attribute(
+            get: fn () => implode(' ', [$this->first_name, $this->last_name, $this->surname])
+        );
+    }
 }

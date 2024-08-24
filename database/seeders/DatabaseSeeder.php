@@ -37,7 +37,8 @@ class DatabaseSeeder extends Seeder
                     'education_level_id' => $educationLevel->getKey(),
                 ])
                 ->each(fn (Student $student) => Attendance::factory(30)
-                    ->sequence(fn (Sequence $sequence) => ['date' => now()->startOfMonth()->addDay($sequence->index)])
+                    // TODO: if day is sunday, then addDay()
+                    ->sequence(fn (Sequence $sequence) => ['date' => now()->startOfMonth()->addDay($sequence->index)->toDateString()])
                     ->create([
                         'student_id' => $student->getKey(),
                         'education_level_id' => $student->educationLevel->getKey(),
