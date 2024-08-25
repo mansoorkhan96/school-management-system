@@ -4,6 +4,7 @@ namespace App\Filament\Resources\EducationLevelResource\RelationManagers;
 
 use App\Enums\AttendanceStatus;
 use App\Models\Student;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -14,28 +15,36 @@ class AttendancesRelationManager extends RelationManager
 {
     protected static string $relationship = 'attendances';
 
+    public ?Carbon $month = null;
+
     public function table(Table $table): Table
     {
-        $month = now();
-        $start = $month->copy()->startOfMonth();
-        $end = $month->copy()->endOfMonth();
+        $this->month ??= now();
+
+        $start = $this->month->copy()->startOfMonth();
+        $end = $this->month->copy()->endOfMonth();
 
         $dates = collect();
         while ($start->lte($end)) {
-            $dates->push($start->toDateString());
+            $dates->push($start->copy());
             $start->addDay();
         }
 
         return $table
+            ->heading("Attendance Report ({$this->month->monthName})")
             ->query(Student::query()->where('education_level_id', $this->getOwnerRecord()->getKey()))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('surname')
                     ->sortable(),
-                ...$dates->map(fn ($date, $index) => Tables\Columns\TextColumn::make("attendance_{$index}")
-                    ->label(Carbon::parse($date)->format('d'))
+                ...$dates->map(fn (Carbon $date, $index) => Tables\Columns\TextColumn::make("attendance_{$index}")
+                    ->label($date->day)
                     ->getStateUsing(function (Student $record) use ($date) {
+                        if ($date->isSunday()) {
+                            return '|';
+                        }
+
                         $attendance = $record->attendances()->whereDate('date', $date)->first();
 
                         return $attendance ? $attendance->attendance_status : '-';
@@ -44,11 +53,26 @@ class AttendancesRelationManager extends RelationManager
                     ->formatStateUsing(fn ($state) => $state instanceof AttendanceStatus ? $state->getShortLabel() : $state)
                 )->toArray(),
             ])
-            ->filters([
-                // Tables\Filters\SelectFilter::make('level')
-                //     ->relationship('level', 'name')
-                //     ->label('Education Level'),
-                // Add more filters as needed
+            ->headerActions([
+                Tables\Actions\Action::make('filter')
+                    ->icon('heroicon-o-funnel')
+                    ->fillForm([
+                        'month' => $this->month->month,
+                    ])
+                    ->form([
+                        ToggleButtons::make('month')
+                            ->inline()
+                            ->required()
+                            ->options([
+                                1 => 'Jan',
+                                2 => 'Feb',
+                                8 => 'Aug',
+                            ])
+                            ->default(now()->month),
+                    ])
+                    ->action(function (array $data, self $livewire) {
+                        $this->month = now()->month((int) $data['month']);
+                    }),
             ]);
     }
 }
