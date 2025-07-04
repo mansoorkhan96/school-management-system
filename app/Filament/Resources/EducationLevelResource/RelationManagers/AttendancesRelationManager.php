@@ -56,9 +56,7 @@ class AttendancesRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\Action::make('filter')
                     ->icon('heroicon-o-funnel')
-                    ->fillForm([
-                        'month' => $this->month->month,
-                    ])
+                    ->fillForm(['month' => $this->month->month])
                     ->form([
                         ToggleButtons::make('month')
                             ->inline()
