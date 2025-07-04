@@ -2,10 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\StudentResource\Pages\ListStudents;
+use App\Filament\Resources\StudentResource\Pages\CreateStudent;
+use App\Filament\Resources\StudentResource\Pages\EditStudent;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Models\Student;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,61 +27,61 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('initial_education_level_id')
+        return $schema
+            ->components([
+                Select::make('initial_education_level_id')
                     ->relationship('initialEducationLevel', 'name')
                     ->required(),
-                Forms\Components\Select::make('education_level_id')
+                Select::make('education_level_id')
                     ->relationship('educationLevel', 'name')
                     ->required(),
-                Forms\Components\TextInput::make('registery_number')
+                TextInput::make('registery_number')
                     ->required(),
-                Forms\Components\TextInput::make('first_name')
+                TextInput::make('first_name')
                     ->required(),
-                Forms\Components\TextInput::make('last_name')
+                TextInput::make('last_name')
                     ->required(),
-                Forms\Components\TextInput::make('surname')
+                TextInput::make('surname')
                     ->required(),
-                Forms\Components\TextInput::make('gender')
+                TextInput::make('gender')
                     ->required(),
-                Forms\Components\DatePicker::make('admission_date')
+                DatePicker::make('admission_date')
                     ->required(),
-                Forms\Components\DatePicker::make('date_of_birth'),
-                Forms\Components\TextInput::make('blood_group'),
-                Forms\Components\TextInput::make('religion'),
-                Forms\Components\TextInput::make('nationality'),
-                Forms\Components\TextInput::make('family_no'),
-                Forms\Components\TextInput::make('languages_known'),
-                Forms\Components\TextInput::make('mother_tongue'),
-                Forms\Components\DatePicker::make('school_leaving_date'),
-                Forms\Components\TextInput::make('father_name'),
-                Forms\Components\TextInput::make('father_cnic'),
-                Forms\Components\TextInput::make('mother_name'),
-                Forms\Components\TextInput::make('mother_cnic'),
-                Forms\Components\TextInput::make('phone')
+                DatePicker::make('date_of_birth'),
+                TextInput::make('blood_group'),
+                TextInput::make('religion'),
+                TextInput::make('nationality'),
+                TextInput::make('family_no'),
+                TextInput::make('languages_known'),
+                TextInput::make('mother_tongue'),
+                DatePicker::make('school_leaving_date'),
+                TextInput::make('father_name'),
+                TextInput::make('father_cnic'),
+                TextInput::make('mother_name'),
+                TextInput::make('mother_cnic'),
+                TextInput::make('phone')
                     ->tel(),
-                Forms\Components\Textarea::make('address')
+                Textarea::make('address')
                     ->columnSpanFull(),
-                Forms\Components\Select::make('previous_education_level_id')
+                Select::make('previous_education_level_id')
                     ->relationship('previousEducationLevel', 'name'),
-                Forms\Components\TextInput::make('previous_study_year'),
-                Forms\Components\TextInput::make('previous_school_name'),
-                Forms\Components\TextInput::make('previous_level_marks')
+                TextInput::make('previous_study_year'),
+                TextInput::make('previous_school_name'),
+                TextInput::make('previous_level_marks')
                     ->numeric(),
-                Forms\Components\Toggle::make('has_disability')
+                Toggle::make('has_disability')
                     ->required(),
-                Forms\Components\Textarea::make('disease')
+                Textarea::make('disease')
                     ->columnSpanFull(),
-                Forms\Components\Textarea::make('medication')
+                Textarea::make('medication')
                     ->columnSpanFull(),
-                Forms\Components\Toggle::make('has_doctor_consultancy')
+                Toggle::make('has_doctor_consultancy')
                     ->required(),
-                Forms\Components\Toggle::make('is_active')
+                Toggle::make('is_active')
                     ->required(),
             ]);
     }
@@ -77,100 +90,100 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('registery_number')
+                TextColumn::make('registery_number')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('first_name')
+                TextColumn::make('first_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
+                TextColumn::make('last_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('surname')
+                TextColumn::make('surname')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('educationLevel.name')
+                TextColumn::make('educationLevel.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('gender')
+                TextColumn::make('gender')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('initialEducationLevel.name')
+                TextColumn::make('initialEducationLevel.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('admission_date')
+                TextColumn::make('admission_date')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('date_of_birth')
+                TextColumn::make('date_of_birth')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('blood_group')
+                TextColumn::make('blood_group')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('religion')
+                TextColumn::make('religion')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('nationality')
+                TextColumn::make('nationality')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('family_no')
+                TextColumn::make('family_no')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('languages_known')
+                TextColumn::make('languages_known')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('mother_tongue')
+                TextColumn::make('mother_tongue')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('school_leaving_date')
+                TextColumn::make('school_leaving_date')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('father_name')
+                TextColumn::make('father_name')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('father_cnic')
+                TextColumn::make('father_cnic')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('mother_name')
+                TextColumn::make('mother_name')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('mother_cnic')
+                TextColumn::make('mother_cnic')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('phone')
+                TextColumn::make('phone')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previousEducationLevel.name')
+                TextColumn::make('previousEducationLevel.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previous_study_year')
+                TextColumn::make('previous_study_year')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previous_school_name')
+                TextColumn::make('previous_school_name')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previous_level_marks')
+                TextColumn::make('previous_level_marks')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\IconColumn::make('has_disability')
+                IconColumn::make('has_disability')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\IconColumn::make('has_doctor_consultancy')
+                IconColumn::make('has_doctor_consultancy')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\IconColumn::make('is_active')
+                IconColumn::make('is_active')
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -185,9 +198,9 @@ class StudentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStudents::route('/'),
-            'create' => Pages\CreateStudent::route('/create'),
-            'edit' => Pages\EditStudent::route('/{record}/edit'),
+            'index' => ListStudents::route('/'),
+            'create' => CreateStudent::route('/create'),
+            'edit' => EditStudent::route('/{record}/edit'),
         ];
     }
 }

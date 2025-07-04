@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EducationLevelResource\Pages;
 
+use Filament\Schemas\Schema;
 use App\Enums\AttendanceStatus;
 use App\Filament\Resources\EducationLevelResource;
 use App\Models\Student;
@@ -10,7 +11,6 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
@@ -23,7 +23,7 @@ class TakeAttendance extends Page
 
     protected static string $resource = EducationLevelResource::class;
 
-    protected static string $view = 'filament.resources.education-level-resource.pages.take-attendance';
+    protected string $view = 'filament.resources.education-level-resource.pages.take-attendance';
 
     public array $data = [];
 
@@ -41,29 +41,29 @@ class TakeAttendance extends Page
         ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->statePath('data')
-            ->schema([
+            ->components([
                 DatePicker::make('date')
                     ->native(false)
                     ->required(),
-                TableRepeater::make('attendances')
-                    ->schema([
-                        Hidden::make('student_id'),
-                        Placeholder::make('name')
-                            ->content(fn (Get $get) => $get('name'))
-                            ->columnSpanFull(),
-                        ToggleButtons::make('attendance_status')
-                            ->options(AttendanceStatus::class)
-                            ->inline(),
-                    ])
-                    ->hiddenLabel()
-                    ->deletable(false)
-                    ->reorderable(false)
-                    ->addable(false)
-                    ->columnSpan('full'),
+                // TableRepeater::make('attendances')
+                //     ->schema([
+                //         Hidden::make('student_id'),
+                //         Placeholder::make('name')
+                //             ->content(fn (Get $get) => $get('name'))
+                //             ->columnSpanFull(),
+                //         ToggleButtons::make('attendance_status')
+                //             ->options(AttendanceStatus::class)
+                //             ->inline(),
+                //     ])
+                //     ->hiddenLabel()
+                //     ->deletable(false)
+                //     ->reorderable(false)
+                //     ->addable(false)
+                //     ->columnSpan('full'),
             ]);
     }
 

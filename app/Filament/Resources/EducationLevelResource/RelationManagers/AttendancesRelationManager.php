@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\EducationLevelResource\RelationManagers;
 
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\Action;
 use App\Enums\AttendanceStatus;
 use App\Models\Student;
 use Filament\Forms\Components\ToggleButtons;
@@ -34,11 +36,11 @@ class AttendancesRelationManager extends RelationManager
             ->heading("Attendance Report ({$this->month->monthName})")
             ->query(Student::query()->where('education_level_id', $this->getOwnerRecord()->getKey()))
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('surname')
+                TextColumn::make('surname')
                     ->sortable(),
-                ...$dates->map(fn (Carbon $date, $index) => Tables\Columns\TextColumn::make("attendance_{$index}")
+                ...$dates->map(fn (Carbon $date, $index) => TextColumn::make("attendance_{$index}")
                     ->label($date->day)
                     ->getStateUsing(function (Student $record) use ($date) {
                         if ($date->isSunday()) {
@@ -54,10 +56,10 @@ class AttendancesRelationManager extends RelationManager
                 )->toArray(),
             ])
             ->headerActions([
-                Tables\Actions\Action::make('filter')
+                Action::make('filter')
                     ->icon('heroicon-o-funnel')
                     ->fillForm(['month' => $this->month->month])
-                    ->form([
+                    ->schema([
                         ToggleButtons::make('month')
                             ->inline()
                             ->required()
