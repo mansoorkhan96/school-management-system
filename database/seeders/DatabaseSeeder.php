@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\Attendance;
 use App\Models\EducationLevel;
 use App\Models\Student;
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'role' => UserRole::Admin,
         ]);
 
         $users = User::factory(2)->create();
@@ -36,13 +38,14 @@ class DatabaseSeeder extends Seeder
                     'initial_education_level_id' => $educationLevel->getKey(),
                     'education_level_id' => $educationLevel->getKey(),
                 ])
-                ->each(fn (Student $student) => Attendance::factory(30)
+                ->each(
+                    fn (Student $student) => Attendance::factory(30)
                     // TODO: if day is sunday, then addDay()
-                    ->sequence(fn (Sequence $sequence) => ['date' => now()->startOfMonth()->addDay($sequence->index)->toDateString()])
-                    ->create([
-                        'student_id' => $student->getKey(),
-                        'education_level_id' => $student->educationLevel->getKey(),
-                    ])
+                        ->sequence(fn (Sequence $sequence) => ['date' => now()->startOfMonth()->addDay($sequence->index)->toDateString()])
+                        ->create([
+                            'student_id' => $student->getKey(),
+                            'education_level_id' => $student->educationLevel->getKey(),
+                        ])
                 );
         });
     }
