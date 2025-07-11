@@ -72,8 +72,7 @@ class Student extends Model
 
     public function name(): Attribute
     {
-        return new Attribute(
-            get: fn () => implode(' ', [$this->first_name, $this->last_name])
-        );
+        return Attribute::get(fn () => $this->first_name . ' ' . $this->last_name)
+            ->shouldCache();
     }
 }
