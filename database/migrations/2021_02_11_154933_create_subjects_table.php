@@ -13,8 +13,8 @@ class CreateSubjectsTable extends Migration
             $table->foreignId('user_id')->comment('subject teacher')->constrained();
             $table->foreignId('education_level_id')->constrained();
             $table->string('name');
-            $table->integer('max_marks');
-            $table->integer('min_passing_marks');
+            $table->tinyInteger('max_marks');
+            $table->tinyInteger('min_passing_marks');
             $table->timestamps();
         });
     }

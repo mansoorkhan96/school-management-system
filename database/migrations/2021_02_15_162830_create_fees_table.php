@@ -17,7 +17,6 @@ class CreateFeesTable extends Migration
             $table->tinyInteger('fee_month')->nullable();
             $table->year('year');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

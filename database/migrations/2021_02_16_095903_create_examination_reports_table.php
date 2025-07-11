@@ -15,7 +15,7 @@ class CreateExaminationReportsTable extends Migration
             $table->foreignId('education_level_id')->constrained();
             $table->string('type');
             $table->year('year');
-            $table->double('obtained_marks')->nullable();
+            $table->tinyInteger('obtained_marks')->nullable();
             $table->timestamps();
         });
     }
