@@ -33,25 +33,27 @@ class AttendancesRelationManager extends RelationManager
 
         return $table
             ->heading("Attendance Report ({$this->month->monthName})")
-            ->query(Student::query()->where('education_level_id', $this->getOwnerRecord()->getKey()))
+            ->query(Student::query()->whereBelongsTo($this->getOwnerRecord()))
+            ->paginated(false)
             ->columns([
                 TextColumn::make('name')
                     ->sortable(),
                 TextColumn::make('surname')
                     ->sortable(['first_name']),
-                ...$dates->map(fn (Carbon $date, $index) => TextColumn::make("attendance_{$index}")
-                    ->label($date->day)
-                    ->getStateUsing(function (Student $record) use ($date) {
-                        if ($date->isSunday()) {
-                            return '|';
-                        }
+                ...$dates->map(
+                    fn (Carbon $date, $index) => TextColumn::make("attendance_{$index}")
+                        ->label($date->day)
+                        ->getStateUsing(function (Student $record) use ($date) {
+                            if ($date->isSunday()) {
+                                return '|';
+                            }
 
-                        $attendance = $record->attendances()->whereDate('date', $date)->first();
+                            $attendance = $record->attendances()->whereDate('date', $date)->first();
 
-                        return $attendance ? $attendance->attendance_status : '-';
-                    })
-                    ->weight(fn () => $date->isSunday() ? FontWeight::Normal : FontWeight::Bold)
-                    ->formatStateUsing(fn ($state) => $state instanceof AttendanceStatus ? $state->getShortLabel() : $state)
+                            return $attendance ? $attendance->attendance_status : '-';
+                        })
+                        ->weight(fn () => $date->isSunday() ? FontWeight::Normal : FontWeight::SemiBold)
+                        ->formatStateUsing(fn ($state) => $state instanceof AttendanceStatus ? $state->getShortLabel() : $state)
                 )->toArray(),
             ])
             ->headerActions([
