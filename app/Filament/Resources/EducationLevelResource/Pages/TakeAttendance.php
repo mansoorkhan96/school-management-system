@@ -2,30 +2,33 @@
 
 namespace App\Filament\Resources\EducationLevelResource\Pages;
 
-use Filament\Schemas\Schema;
 use App\Enums\AttendanceStatus;
 use App\Filament\Resources\EducationLevelResource;
 use App\Models\Student;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
-use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 
-class TakeAttendance extends Page
+class TakeAttendance extends Page implements HasSchemas
 {
     use InteractsWithRecord;
+    use InteractsWithSchemas;
 
     protected static string $resource = EducationLevelResource::class;
 
     protected string $view = 'filament.resources.education-level-resource.pages.take-attendance';
 
-    public array $data = [];
+    public ?array $data = [];
 
     public function mount(int|string $record): void
     {
@@ -33,11 +36,14 @@ class TakeAttendance extends Page
 
         $this->form->fill([
             'date' => now(),
-            'attendances' => $this->record->students()->get(['id', 'first_name', 'last_name', 'surname'])->map(fn (Student $student) => [
-                'student_id' => $student->getKey(),
-                'name' => $student->name,
-                'attendance_status' => AttendanceStatus::Present->value,
-            ]),
+            'attendances' => $this->record
+                ->students()
+                ->get(['id', 'first_name', 'last_name', 'surname'])
+                ->map(fn (Student $student) => [
+                    'student_id' => $student->getKey(),
+                    'name' => $student->name,
+                    'attendance_status' => AttendanceStatus::Present,
+                ]),
         ]);
     }
 
@@ -45,25 +51,30 @@ class TakeAttendance extends Page
     {
         return $schema
             ->statePath('data')
-            ->components([
+            ->state($this->data)
+            ->schema([
                 DatePicker::make('date')
                     ->native(false)
                     ->required(),
-                // TableRepeater::make('attendances')
-                //     ->schema([
-                //         Hidden::make('student_id'),
-                //         Placeholder::make('name')
-                //             ->content(fn (Get $get) => $get('name'))
-                //             ->columnSpanFull(),
-                //         ToggleButtons::make('attendance_status')
-                //             ->options(AttendanceStatus::class)
-                //             ->inline(),
-                //     ])
-                //     ->hiddenLabel()
-                //     ->deletable(false)
-                //     ->reorderable(false)
-                //     ->addable(false)
-                //     ->columnSpan('full'),
+                Repeater::make('attendances')
+                    ->table([
+                        TableColumn::make('Name')
+                            ->alignLeft(),
+                        TableColumn::make('Attendance')
+                            ->alignLeft(),
+                    ])
+                    ->schema([
+                        Hidden::make('student_id'),
+                        TextInput::make('name')
+                            ->disabled()
+                            ->columnSpanFull(),
+                        ToggleButtons::make('attendance_status')
+                            ->options(AttendanceStatus::class)
+                            ->inline(),
+                    ])
+                    ->addable(false)
+                    ->deletable(false)
+                    ->reorderable(false),
             ]);
     }
 

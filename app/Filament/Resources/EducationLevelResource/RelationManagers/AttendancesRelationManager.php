@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources\EducationLevelResource\RelationManagers;
 
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\Action;
 use App\Enums\AttendanceStatus;
 use App\Models\Student;
+use Filament\Actions\Action;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
 
@@ -39,7 +38,7 @@ class AttendancesRelationManager extends RelationManager
                 TextColumn::make('name')
                     ->sortable(),
                 TextColumn::make('surname')
-                    ->sortable(),
+                    ->sortable(['first_name']),
                 ...$dates->map(fn (Carbon $date, $index) => TextColumn::make("attendance_{$index}")
                     ->label($date->day)
                     ->getStateUsing(function (Student $record) use ($date) {
@@ -51,7 +50,7 @@ class AttendancesRelationManager extends RelationManager
 
                         return $attendance ? $attendance->attendance_status : '-';
                     })
-                    ->weight(FontWeight::SemiBold)
+                    ->weight(fn () => $date->isSunday() ? FontWeight::Normal : FontWeight::Bold)
                     ->formatStateUsing(fn ($state) => $state instanceof AttendanceStatus ? $state->getShortLabel() : $state)
                 )->toArray(),
             ])
