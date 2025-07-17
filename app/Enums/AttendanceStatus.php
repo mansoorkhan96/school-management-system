@@ -17,6 +17,7 @@ enum AttendanceStatus: string implements HasColor, HasLabel
             self::Present => 'Present',
             self::Absent => 'Absent',
             self::Leave => 'Leave',
+            default => '-',
         };
     }
 
@@ -26,15 +27,17 @@ enum AttendanceStatus: string implements HasColor, HasLabel
             self::Present => 'P',
             self::Absent => 'A',
             self::Leave => 'L',
+            default => '-',
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::Present => 'success',
             self::Absent => 'danger',
             self::Leave => 'warning',
+            default => 'gray',
         };
     }
 }

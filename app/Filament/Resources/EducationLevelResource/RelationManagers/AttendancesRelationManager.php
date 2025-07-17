@@ -4,9 +4,11 @@ namespace App\Filament\Resources\EducationLevelResource\RelationManagers;
 
 use App\Enums\AttendanceStatus;
 use App\Filament\Resources\EducationLevelResource;
+use App\Models\Attendance;
 use App\Models\Student;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Icons\Heroicon;
@@ -78,21 +80,45 @@ class AttendancesRelationManager extends RelationManager
         }
 
         return $dates
-            ->map(
-                fn (Carbon $date, $index) => TextColumn::make("attendance_{$index}")
+            ->map(function (Carbon $date, $index) {
+                $attendance = $date->isSunday()
+                    ? '|'
+                    : $this->getOwnerRecord()->attendances->where('date', $date)->value('attendance_status') ?? '-';
+
+                return TextColumn::make("attendance_{$index}")
                     ->label($date->day)
-                    ->getStateUsing(function (Student $student) use ($date) {
-                        if ($date->isSunday()) {
-                            return '|';
-                        }
-
-                        $attendance = $student->attendances->where('date', $date)->first();
-
-                        return $attendance ? $attendance->attendance_status : '-';
-                    })
+                    ->getStateUsing(fn () => $attendance)
                     ->weight(fn () => $date->isSunday() ? FontWeight::Normal : FontWeight::SemiBold)
                     ->formatStateUsing(fn ($state) => $state instanceof AttendanceStatus ? $state->getShortLabel() : $state)
-            )
+                    ->disabledClick(fn () => $attendance === '|' || $attendance === '-')
+                    ->action(
+                        // TODO: Bug, this action updates attendances for all students
+                        // Maybe redirect to a page where attendance for specific date and level can be updated
+                        Action::make('edit' . $date->toDateString() . $index)
+                            ->modalHeading("Edit Attendance for {$date->format('d M Y')}")
+                            ->schema([
+                                ToggleButtons::make('attendance_status')
+                                    ->options(AttendanceStatus::class)
+                                    ->default($attendance)
+                                    ->inline()
+                                    ->required(),
+                            ])
+                            ->action(function (Student $student, array $data) use ($date) {
+                                Attendance::query()
+                                    ->whereBelongsTo($student)
+                                    ->whereBelongsTo($this->getOwnerRecord())
+                                    ->where('date', $date)
+                                    ->update([
+                                        'attendance_status' => $data['attendance_status'],
+                                    ]);
+
+                                Notification::make()
+                                    ->success()
+                                    ->title('Attendance updated!')
+                                    ->send();
+                            })
+                    );
+            })
             ->toArray();
     }
 
