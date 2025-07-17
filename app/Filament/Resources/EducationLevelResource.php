@@ -2,25 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\EducationLevelResource\Pages\ListEducationLevels;
 use App\Filament\Resources\EducationLevelResource\Pages\CreateEducationLevel;
 use App\Filament\Resources\EducationLevelResource\Pages\EditEducationLevel;
+use App\Filament\Resources\EducationLevelResource\Pages\ListEducationLevels;
 use App\Filament\Resources\EducationLevelResource\Pages\TakeAttendance;
-use App\Filament\Resources\EducationLevelResource\Pages;
 use App\Filament\Resources\EducationLevelResource\RelationManagers\AttendancesRelationManager;
 use App\Models\EducationLevel;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class EducationLevelResource extends Resource
