@@ -22,31 +22,32 @@ class DatabaseSeeder extends Seeder
             'role' => UserRole::Admin,
         ]);
 
-        $users = User::factory(2)->create();
+        $this->call([
+            EducationLevelSeeder::class,
+        ]);
 
-        $educationLevels = EducationLevel::factory(2)
-            ->sequence(fn (Sequence $sequence) => ['user_id' => $users[$sequence->index]->getKey()])
-            ->create();
+        $users = User::all();
 
-        $educationLevels->each(function (EducationLevel $educationLevel) use ($users) {
-            Subject::factory(8)
-                ->sequence(fn () => ['user_id' => $users->random()->getKey()])
-                ->create(['education_level_id' => $educationLevel->getKey()]);
+        EducationLevel::all()
+            ->each(function (EducationLevel $educationLevel) use ($users) {
+                Subject::factory(8)
+                    ->sequence(fn () => ['user_id' => $users->random()->getKey()])
+                    ->create(['education_level_id' => $educationLevel->getKey()]);
 
-            Student::factory(2)
-                ->create([
-                    'initial_education_level_id' => $educationLevel->getKey(),
-                    'education_level_id' => $educationLevel->getKey(),
-                ])
-                ->each(
-                    fn (Student $student) => Attendance::factory(30)
-                    // TODO: if day is sunday, then addDay()
-                        ->sequence(fn (Sequence $sequence) => ['date' => now()->startOfMonth()->addDay($sequence->index)->toDateString()])
-                        ->create([
-                            'student_id' => $student->getKey(),
-                            'education_level_id' => $student->educationLevel->getKey(),
-                        ])
-                );
-        });
+                Student::factory(2)
+                    ->create([
+                        'initial_education_level_id' => $educationLevel->getKey(),
+                        'education_level_id' => $educationLevel->getKey(),
+                    ])
+                    ->each(
+                        fn (Student $student) => Attendance::factory(30)
+                        // TODO: if day is sunday, then addDay()
+                            ->sequence(fn (Sequence $sequence) => ['date' => now()->startOfMonth()->addDay($sequence->index)->toDateString()])
+                            ->create([
+                                'student_id' => $student->getKey(),
+                                'education_level_id' => $student->educationLevel->getKey(),
+                            ])
+                    );
+            });
     }
 }

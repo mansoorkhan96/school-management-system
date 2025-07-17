@@ -4,7 +4,6 @@
 
 # Features
 
-- Improve seeders
 - Disable delete action for students
 - Add student avatar
 - Make attendance report editable
