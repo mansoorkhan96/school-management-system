@@ -1,7 +1,5 @@
 # Bugs
 
-- Fix attendance report filter
-
 # Features
 
 - Add student avatar
