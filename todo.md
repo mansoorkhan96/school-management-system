@@ -4,7 +4,6 @@
 
 # Features
 
-- Disable delete action for students
 - Add student avatar
 - Make attendance report editable
 - Add examination report
