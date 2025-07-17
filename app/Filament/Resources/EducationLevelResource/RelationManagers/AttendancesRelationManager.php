@@ -4,20 +4,19 @@ namespace App\Filament\Resources\EducationLevelResource\RelationManagers;
 
 use App\Enums\AttendanceStatus;
 use App\Models\Student;
-use Filament\Actions\Action;
-use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
-use Livewire\Attributes\Url;
 
 class AttendancesRelationManager extends RelationManager
 {
     protected static string $relationship = 'attendances';
 
-    #[Url]
     public ?int $month = null;
 
     public function table(Table $table): Table
@@ -39,7 +38,6 @@ class AttendancesRelationManager extends RelationManager
             ->heading("Attendance Report ({$month->monthName})")
             ->query(
                 fn () => Student::query()
-                    ->with(['attendances' => fn ($query) => $query->whereMonth('date', $month->month)])
                     ->whereBelongsTo($this->getOwnerRecord())
             )
             ->paginated(false)
@@ -48,6 +46,7 @@ class AttendancesRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('surname')
                     ->sortable(['first_name']),
+                TextColumn::make('attendances.attendance_status'),
                 ...$dates->map(
                     fn (Carbon $date, $index) => TextColumn::make("attendance_{$index}")
                         ->label($date->day)
@@ -57,7 +56,6 @@ class AttendancesRelationManager extends RelationManager
                             }
 
                             $attendance = $student->attendances->where('date', $date)->first();
-                            // dd($student->attendances);
 
                             return $attendance ? $attendance->attendance_status : '-';
                         })
@@ -65,35 +63,51 @@ class AttendancesRelationManager extends RelationManager
                         ->formatStateUsing(fn ($state) => $state instanceof AttendanceStatus ? $state->getShortLabel() : $state)
                 )->toArray(),
             ])
-            ->headerActions([
-                Action::make('filter')
-                    ->icon('heroicon-o-funnel')
-                    ->fillForm(['month' => $this->month])
-                    ->schema([
-                        ToggleButtons::make('month')
-                            ->inline()
-                            ->required()
-                            ->default($this->month)
+            ->filters([
+                Filter::make('month')
+                    ->form([
+                        Select::make('month')
                             ->options([
-                                1 => 'Jan',
-                                2 => 'Feb',
-                                3 => 'Mar',
-                                4 => 'Apr',
+                                1 => 'January',
+                                2 => 'February',
+                                3 => 'March',
+                                4 => 'April',
                                 5 => 'May',
-                                6 => 'Jun',
-                                7 => 'Jul',
-                                8 => 'Aug',
-                                9 => 'Sep',
-                                10 => 'Oct',
-                                11 => 'Nov',
-                                12 => 'Dec',
+                                6 => 'June',
+                                7 => 'July',
+                                8 => 'August',
+                                9 => 'September',
+                                10 => 'October',
+                                11 => 'November',
+                                12 => 'December',
                             ])
                             ->default(now()->month),
                     ])
-                    ->action(function (array $data, self $livewire) {
-                        $this->month = (int) $data['month'];
+                    ->query(function (Builder $query, array $data): Builder {
+                        $selectedMonth = $data['month'] ?? now()->month;
+                        $this->month = (int) $selectedMonth;
 
-                        $livewire->dispatch('$refresh');
+                        return $query->with(['attendances' => fn ($q) => $q->whereMonth('date', $selectedMonth)->whereYear('date', now()->year)]);
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if ($data['month'] ?? null) {
+                            return 'Month: ' . collect([
+                                1 => 'January',
+                                2 => 'February',
+                                3 => 'March',
+                                4 => 'April',
+                                5 => 'May',
+                                6 => 'June',
+                                7 => 'July',
+                                8 => 'August',
+                                9 => 'September',
+                                10 => 'October',
+                                11 => 'November',
+                                12 => 'December',
+                            ])[$data['month']];
+                        }
+
+                        return null;
                     }),
             ]);
     }
