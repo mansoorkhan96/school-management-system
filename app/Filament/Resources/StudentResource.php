@@ -8,6 +8,7 @@ use App\Filament\Resources\StudentResource\Pages\ListStudents;
 use App\Models\Student;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -78,6 +80,12 @@ class StudentResource extends Resource
                     ->required(),
                 Toggle::make('is_active')
                     ->required(),
+                FileUpload::make('profile_photo_path')
+                    ->image()
+                    ->directory('profile-photos')
+                    ->disk('public')
+                    ->avatar()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -85,6 +93,10 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('profile_photo_path')
+                    ->circular()
+                    ->disk('public')
+                    ->label('Photo'),
                 TextColumn::make('registery_number')
                     ->searchable(),
                 TextColumn::make('first_name')

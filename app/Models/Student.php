@@ -9,11 +9,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Student extends Model
 {
     // use \Awobaz\Compoships\Compoships;
     use HasFactory;
+
+    protected static function booted()
+    {
+        static::saving(function ($student) {
+            if (blank($student->profile_photo_path) && $student->isDirty('profile_photo_path')) {
+                if (Storage::disk('public')->exists($student->getOriginal('profile_photo_path'))) {
+                    Storage::disk('public')->delete($student->getOriginal('profile_photo_path'));
+                }
+            }
+        });
+
+        static::deleting(function ($student) {
+            if ($student->profile_photo_path && Storage::disk('public')->exists($student->profile_photo_path)) {
+                Storage::disk('public')->delete($student->profile_photo_path);
+            }
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

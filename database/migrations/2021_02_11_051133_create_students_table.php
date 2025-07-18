@@ -47,6 +47,8 @@ class CreateStudentsTable extends Migration
             $table->boolean('has_doctor_consultancy')->default(false);
             $table->boolean('is_active')->default(true);
 
+            $table->string('profile_photo_path')->nullable();
+
             $table->timestamps();
         });
     }
