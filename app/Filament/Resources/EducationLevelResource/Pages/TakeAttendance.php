@@ -16,10 +16,9 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 
-class TakeAttendance extends Page implements HasSchemas
+class TakeAttendance extends Page
 {
     use InteractsWithRecord;
     use InteractsWithSchemas;
@@ -30,7 +29,7 @@ class TakeAttendance extends Page implements HasSchemas
 
     public ?array $data = [];
 
-    public function mount(int|string $record): void
+    public function mount(int | string $record): void
     {
         $this->record = $this->resolveRecord($record);
 

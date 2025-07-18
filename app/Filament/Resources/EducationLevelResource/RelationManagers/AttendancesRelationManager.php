@@ -33,7 +33,7 @@ class AttendancesRelationManager extends RelationManager
             ->query(
                 fn () => Student::query()
                     ->whereBelongsTo($this->getOwnerRecord())
-                    ->with(['attendances' => fn ($query) => $query->whereMonth('date', $this->month)])
+                    ->with(['attendances' => fn ($query) => $query->whereBelongsTo($this->getOwnerRecord())->whereMonth('date', $this->month)])
             )
             ->paginated(false)
             ->columns([
@@ -45,7 +45,7 @@ class AttendancesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Action::make('filter')
-                    ->icon(Heroicon::OutlinedFunnel)
+                    ->icon(fn () => Heroicon::OutlinedFunnel)
                     ->schema([
                         ToggleButtons::make('month')
                             ->inline()
@@ -81,25 +81,27 @@ class AttendancesRelationManager extends RelationManager
 
         return $dates
             ->map(function (Carbon $date, $index) {
-                $attendance = $date->isSunday()
-                    ? '|'
-                    : $this->getOwnerRecord()->attendances->where('date', $date)->value('attendance_status') ?? '-';
-
                 return TextColumn::make("attendance_{$index}")
                     ->label($date->day)
-                    ->getStateUsing(fn () => $attendance)
+                    ->getStateUsing(function (Student $student) use ($date) {
+                        if ($date->isSunday()) {
+                            return '|';
+                        }
+
+                        $attendance = $student->attendances->where('date', $date)->first();
+
+                        return $attendance ? $attendance->attendance_status : '-';
+                    })
                     ->weight(fn () => $date->isSunday() ? FontWeight::Normal : FontWeight::SemiBold)
                     ->formatStateUsing(fn ($state) => $state instanceof AttendanceStatus ? $state->getShortLabel() : $state)
-                    ->disabledClick(fn () => $attendance === '|' || $attendance === '-')
+                    ->disabledClick(fn () => $date->isSunday() || $date->isFuture())
                     ->action(
-                        // TODO: Bug, this action updates attendances for all students
-                        // Maybe redirect to a page where attendance for specific date and level can be updated
                         Action::make('edit' . $date->toDateString() . $index)
                             ->modalHeading("Edit Attendance for {$date->format('d M Y')}")
                             ->schema([
                                 ToggleButtons::make('attendance_status')
                                     ->options(AttendanceStatus::class)
-                                    ->default($attendance)
+                                    ->default(fn (Student $student) => $student->attendances->where('date', $date)->value('attendance_status'))
                                     ->inline()
                                     ->required(),
                             ])

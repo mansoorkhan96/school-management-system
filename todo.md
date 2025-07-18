@@ -3,7 +3,6 @@
 # Features
 
 - Add student avatar
-- Make attendance report editable
 - Add examination report
 - Add student fees collection
 - Payrol
