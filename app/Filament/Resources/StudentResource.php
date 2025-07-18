@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\BloodGroup;
+use App\Enums\Gender;
 use App\Filament\Resources\StudentResource\Pages\CreateStudent;
 use App\Filament\Resources\StudentResource\Pages\EditStudent;
 use App\Filament\Resources\StudentResource\Pages\ListStudents;
@@ -46,17 +47,18 @@ class StudentResource extends Resource
                                 ->required(),
                             TextInput::make('surname')
                                 ->required(),
-                            TextInput::make('gender')
+                            Select::make('gender')
+                                ->options(Gender::class)
                                 ->required(),
                             DatePicker::make('date_of_birth'),
                             Select::make('blood_group')
                                 ->options(BloodGroup::class),
                             TextInput::make('religion'),
                             TextInput::make('nationality'),
-                            Textarea::make('address')
-                                ->columnSpanFull(),
                             TextInput::make('languages_known'),
                             TextInput::make('mother_tongue'),
+                            Textarea::make('address')
+                                ->columnSpanFull(),
                         ]),
                     Section::make('Guardian Details')
                         ->columns(2)
@@ -70,15 +72,14 @@ class StudentResource extends Resource
                                 ->tel(),
                         ]),
                     Section::make('Student Health Details')
+                        ->columns(2)
                         ->components([
-                            Toggle::make('has_disability')
-                                ->required(),
+                            Toggle::make('has_disability'),
+                            Toggle::make('has_doctor_consultancy'),
                             Textarea::make('disease')
                                 ->columnSpanFull(),
                             Textarea::make('medication')
                                 ->columnSpanFull(),
-                            Toggle::make('has_doctor_consultancy')
-                                ->required(),
                         ]),
                 ])
                     ->columnSpan(2),
@@ -87,11 +88,11 @@ class StudentResource extends Resource
                         ->components([
                             Flex::make([
                                 FileUpload::make('profile_photo_path')
+                                    ->label('Profile Photo')
                                     ->image()
                                     ->directory('profile-photos')
                                     ->disk('public')
                                     ->avatar()
-                                    ->hiddenLabel()
                                     ->grow(false),
                             ])->extraAttributes(['style' => 'justify-content: center;']),
                             Toggle::make('is_active')

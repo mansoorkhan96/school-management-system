@@ -2,7 +2,6 @@
 
 # Features
 
-- Add student avatar
 - Add examination report
 - Add student fees collection
 - Payrol
