@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum ExaminationType: string implements HasLabel
+enum ExaminationReportType: string implements HasLabel
 {
     case Mid = 'mid';
     case Annual = 'annual';

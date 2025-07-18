@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Examination extends Model
+class ExaminationReport extends Model
 {
     use HasFactory;
     // use \Awobaz\Compoships\Compoships;
