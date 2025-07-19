@@ -2,6 +2,7 @@
 
 # Features
 
+- Validate attendance for existing date
 - Add examination report
 - Add student fees collection
 - Payrol
