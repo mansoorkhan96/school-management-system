@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\EducationLevelResource\Pages;
+namespace App\Filament\Resources\EducationLevels\Pages;
 
-use App\Filament\Resources\EducationLevelResource;
+use App\Filament\Resources\EducationLevels\EducationLevelResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateEducationLevel extends CreateRecord

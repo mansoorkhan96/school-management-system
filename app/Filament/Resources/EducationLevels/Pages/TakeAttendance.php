@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\EducationLevelResource\Pages;
+namespace App\Filament\Resources\EducationLevels\Pages;
 
 use App\Enums\AttendanceStatus;
-use App\Filament\Resources\EducationLevelResource;
+use App\Filament\Resources\EducationLevels\EducationLevelResource;
 use App\Models\Student;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;

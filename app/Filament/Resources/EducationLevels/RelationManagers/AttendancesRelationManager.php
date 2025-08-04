@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\EducationLevelResource\RelationManagers;
+namespace App\Filament\Resources\EducationLevels\RelationManagers;
 
 use App\Enums\AttendanceStatus;
-use App\Filament\Resources\EducationLevelResource;
+use App\Filament\Resources\EducationLevels\EducationLevelResource;
 use App\Models\Attendance;
 use App\Models\Student;
 use Filament\Actions\Action;

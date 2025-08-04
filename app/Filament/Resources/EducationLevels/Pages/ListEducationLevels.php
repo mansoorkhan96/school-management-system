@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\EducationLevelResource\Pages;
+namespace App\Filament\Resources\EducationLevels\Pages;
 
 use Filament\Actions\CreateAction;
-use App\Filament\Resources\EducationLevelResource;
-use Filament\Actions;
+use App\Filament\Resources\EducationLevels\EducationLevelResource;
 use Filament\Resources\Pages\ListRecords;
 
 class ListEducationLevels extends ListRecords
