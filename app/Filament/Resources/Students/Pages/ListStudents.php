@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\StudentResource\Pages;
+namespace App\Filament\Resources\Students\Pages;
 
 use Filament\Actions\CreateAction;
-use App\Filament\Resources\StudentResource;
-use Filament\Actions;
+use App\Filament\Resources\Students\StudentResource;
 use Filament\Resources\Pages\ListRecords;
 
 class ListStudents extends ListRecords

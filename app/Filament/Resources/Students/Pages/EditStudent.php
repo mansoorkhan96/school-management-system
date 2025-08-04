@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\StudentResource\Pages;
+namespace App\Filament\Resources\Students\Pages;
 
-use App\Filament\Resources\StudentResource;
+use App\Filament\Resources\Students\StudentResource;
 use Filament\Resources\Pages\EditRecord;
 
 class EditStudent extends EditRecord
