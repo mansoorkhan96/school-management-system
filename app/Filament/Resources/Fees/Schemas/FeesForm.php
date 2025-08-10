@@ -25,7 +25,7 @@ class FeesForm
                             Select::make('student_id')
                                 ->label('Student')
                                 ->relationship('student', 'first_name')
-                                ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name} ({$record->registery_number})")
+                                ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
                                 ->searchable(['first_name', 'last_name', 'registery_number'])
                                 ->required(),
                             TextInput::make('amount')
