@@ -17,6 +17,14 @@ class CreateExaminationReportsTable extends Migration
             $table->year('year');
             $table->tinyInteger('obtained_marks')->nullable();
             $table->timestamps();
+
+            $table->unique([
+                'student_id',
+                'subject_id',
+                'education_level_id',
+                'type',
+                'year',
+            ]);
         });
     }
 

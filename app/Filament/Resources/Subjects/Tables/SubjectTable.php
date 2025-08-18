@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\Subjects\Tables;
 
+use App\Filament\Resources\Subjects\SubjectResource;
+use App\Models\Subject;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -35,6 +39,10 @@ class SubjectTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('create-examination-report')
+                    ->label('Create Examination Report')
+                    ->icon(Heroicon::OutlinedDocumentText)
+                    ->url(fn (Subject $record) => SubjectResource::getUrl('create-examination-report', ['record' => $record])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

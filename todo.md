@@ -4,6 +4,7 @@
 
 - Validate attendance for existing date
 - Add examination report
+- Validate examination report
 - Payrol
 - Add School expenses
 - Add student id card print

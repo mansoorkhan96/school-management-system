@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Subjects;
 
+use App\Filament\Resources\Subjects\Pages\CreateExaminationReport;
 use App\Filament\Resources\Subjects\Pages\CreateSubject;
 use App\Filament\Resources\Subjects\Pages\EditSubject;
 use App\Filament\Resources\Subjects\Pages\ListSubjects;
+use App\Filament\Resources\Subjects\RelationManagers\ExaminationReportsRelationManager;
 use App\Filament\Resources\Subjects\Schemas\SubjectForm;
 use App\Filament\Resources\Subjects\Tables\SubjectTable;
 use App\Models\Subject;
@@ -17,7 +19,7 @@ class SubjectResource extends Resource
 {
     protected static ?string $model = Subject::class;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Schema $schema): Schema
     {
@@ -32,7 +34,7 @@ class SubjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ExaminationReportsRelationManager::class,
         ];
     }
 
@@ -42,6 +44,7 @@ class SubjectResource extends Resource
             'index' => ListSubjects::route('/'),
             'create' => CreateSubject::route('/create'),
             'edit' => EditSubject::route('/{record}/edit'),
+            'create-examination-report' => CreateExaminationReport::route('/{record}/create-examination-report'),
         ];
     }
 }
