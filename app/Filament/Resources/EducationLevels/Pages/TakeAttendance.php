@@ -25,7 +25,7 @@ class TakeAttendance extends Page
 
     protected static string $resource = EducationLevelResource::class;
 
-    protected string $view = 'filament.resources.education-level-resource.pages.take-attendance';
+    protected string $view = 'filament.education-levels.pages.take-attendance';
 
     public ?array $data = [];
 
