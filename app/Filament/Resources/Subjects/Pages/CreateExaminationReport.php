@@ -53,7 +53,6 @@ class CreateExaminationReport extends Page
     {
         return $schema
             ->statePath('data')
-            // ->state($this->data)
             ->columns(2)
             ->schema([
                 Select::make('type')

@@ -12,9 +12,17 @@ class CreateAttendancesTable extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained();
             $table->foreignId('education_level_id')->constrained();
+            $table->foreignId('subject_id')->default(0);
             $table->string('attendance_status');
             $table->date('date');
             $table->timestamps();
+
+            $table->unique([
+                'student_id',
+                'education_level_id',
+                'subject_id',
+                'date',
+            ], 'student_unique_attendance_index');
         });
     }
 

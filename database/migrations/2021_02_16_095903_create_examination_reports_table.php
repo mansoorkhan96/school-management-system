@@ -24,7 +24,7 @@ class CreateExaminationReportsTable extends Migration
                 'education_level_id',
                 'type',
                 'year',
-            ]);
+            ], 'student_unique_exam_report_index');
         });
     }
 

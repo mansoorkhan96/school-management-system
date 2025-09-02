@@ -10,11 +10,12 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Schema;
 
@@ -64,8 +65,10 @@ class TakeAttendance extends Page
                     ])
                     ->schema([
                         Hidden::make('student_id'),
-                        TextInput::make('name')
-                            ->disabled()
+                        Hidden::make('name'),
+                        TextEntry::make('name')
+                            ->hiddenLabel()
+                            ->state(fn (Get $get) => $get('name'))
                             ->columnSpanFull(),
                         ToggleButtons::make('attendance_status')
                             ->options(AttendanceStatus::class)
