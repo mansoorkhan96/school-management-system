@@ -4,6 +4,7 @@ namespace App\Filament\Resources\EducationLevels\Pages;
 
 use App\Enums\AttendanceStatus;
 use App\Filament\Resources\EducationLevels\EducationLevelResource;
+use App\Models\Attendance;
 use App\Models\Student;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -18,6 +19,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Carbon;
 
 class TakeAttendance extends Page
 {
@@ -55,7 +57,24 @@ class TakeAttendance extends Page
             ->schema([
                 DatePicker::make('date')
                     ->native(false)
-                    ->required(),
+                    ->required()
+                    ->rule(function ($operation) {
+                        if (str_starts_with($operation, 'edit')) {
+                            return;
+                        }
+
+                        return function (string $attribute, $value, \Closure $fail) {
+                            $exists = Attendance::query()
+                                ->whereBelongsTo($this->record)
+                                ->whereDate('date', Carbon::parse($value)->toDateString())
+                                // ->where('subject_id', 0)
+                                ->exists();
+
+                            if ($exists) {
+                                $fail('Attendance records already exist for this date.');
+                            }
+                        };
+                    }),
                 Repeater::make('attendances')
                     ->table([
                         TableColumn::make('Name')

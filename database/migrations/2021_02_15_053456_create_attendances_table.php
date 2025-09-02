@@ -18,10 +18,10 @@ class CreateAttendancesTable extends Migration
             $table->timestamps();
 
             $table->unique([
-                'student_id',
                 'education_level_id',
-                'subject_id',
                 'date',
+                'student_id',
+                'subject_id',
             ], 'student_unique_attendance_index');
         });
     }
