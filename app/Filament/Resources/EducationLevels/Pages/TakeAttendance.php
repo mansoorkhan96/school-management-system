@@ -70,8 +70,9 @@ class TakeAttendance extends Page
                                 // ->where('subject_id', 0)
                                 ->exists();
 
+                            $date = Carbon::parse($value)->format('M j, Y');
                             if ($exists) {
-                                $fail('Attendance records already exist for this date.');
+                                $fail("Attendance already exists for {$date}");
                             }
                         };
                     }),

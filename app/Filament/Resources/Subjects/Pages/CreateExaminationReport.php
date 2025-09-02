@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Subjects\Pages;
 
 use App\Enums\ExaminationReportType;
 use App\Filament\Resources\Subjects\SubjectResource;
+use App\Models\ExaminationReport;
 use App\Models\Student;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
@@ -61,7 +62,25 @@ class CreateExaminationReport extends Page
                 TextInput::make('year')
                     ->numeric()
                     ->default(now()->year)
-                    ->required(),
+                    ->required()
+                    ->rule(function ($operation, $state, Get $get) {
+                        if (str_starts_with($operation, 'edit')) {
+                            return;
+                        }
+
+                        return function (string $attribute, $value, \Closure $fail) use ($state, $get) {
+                            $exists = ExaminationReport::query()
+                                ->whereBelongsTo($this->record)
+                                ->where('education_level_id', $this->record->educationLevel->getKey())
+                                ->where('type', $get('type'))
+                                ->where('year', $state)
+                                ->exists();
+
+                            if ($exists) {
+                                $fail("Examination report already exists for {$get('type')->getLabel()} {$state}");
+                            }
+                        };
+                    }),
                 Repeater::make('examination_reports')
                     ->columnSpanFull()
                     ->table([

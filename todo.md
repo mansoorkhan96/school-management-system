@@ -2,8 +2,6 @@
 
 # Features
 
-- Validate attendance for existing date
-- Validate examination report
 - Add student id card print
 - Add exam admit card print
 - Payrol
